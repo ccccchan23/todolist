@@ -1,0 +1,20 @@
+{
+  "name": "Eee小窝",
+  "short_name": "Eee小窝",
+  "description": "EeeChan的作息打卡与猫咪陪伴",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff5f7",
+  "theme_color": "#f4a0b5",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "productivity"],
+  "lang": "zh-CN"
+}

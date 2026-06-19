@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f4a0b5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Eee小窝">
+<meta name="description" content="Eee小窝 - 作息打卡与猫咪陪伴">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<title>Eee小窝 🐱</title>
+<style>
+/* ====== CSS Variables / Themes ====== */
+:root, [data-theme="pink"] {
+  --bg: #fff5f7; --bg2: #fff0f3; --card: #ffffff; --card2: #fffafb;
+  --border: #fddde6; --text: #5c3d4e; --sub: #c49db2;
+  --accent: #f4a0b5; --accent2: #e8879e; --accent3: #d46a84;
+  --tag-bg: #fef0f3; --tag-text: #d46a84;
+  --bar-bg: rgba(255,255,255,0.94); --bar-border: #fddde6;
+  --modal-overlay: rgba(92,61,78,0.3);
+  --shadow: rgba(244,160,181,0.06);
+  --gradient: linear-gradient(180deg, #fff0f3 0%, #fff5f7 30%, #fef0f3 100%);
+}
+[data-theme="purple"] {
+  --bg: #f8f6fc; --bg2: #f3f0fa; --card: #ffffff; --card2: #fdfbff;
+  --border: #e0d4f5; --text: #4a3f5c; --sub: #9078c0;
+  --accent: #b8a0e0; --accent2: #a080d0; --accent3: #8060c0;
+  --tag-bg: #f4f0fa; --tag-text: #9078c0;
+  --bar-bg: rgba(255,255,255,0.94); --bar-border: #e0d4f5;
+  --modal-overlay: rgba(74,63,92,0.3);
+  --shadow: rgba(184,160,224,0.06);
+  --gradient: linear-gradient(180deg, #f3f0fa 0%, #f8f6fc 30%, #f3f0fa 100%);
+}
+[data-theme="mint"] {
+  --bg: #f5faf8; --bg2: #eef7f3; --card: #ffffff; --card2: #fafffc;
+  --border: #c8ebd8; --text: #3d5c4e; --sub: #6ab890;
+  --accent: #a8d8c8; --accent2: #7cc8a8; --accent3: #5ab890;
+  --tag-bg: #edf8f2; --tag-text: #5ab890;
+  --bar-bg: rgba(255,255,255,0.94); --bar-border: #c8ebd8;
+  --modal-overlay: rgba(61,92,78,0.3);
+  --shadow: rgba(168,216,200,0.06);
+  --gradient: linear-gradient(180deg, #eef7f3 0%, #f5faf8 30%, #eef7f3 100%);
+}
+[data-theme="dark"] {
+  --bg: #2a1f2e; --bg2: #1f1522; --card: #382b3e; --card2: #3d2f43;
+  --border: #4a3a52; --text: #e8d8e8; --sub: #a090a8;
+  --accent: #c090b8; --accent2: #d0a0c8; --accent3: #e0b0d8;
+  --tag-bg: #3d2f43; --tag-text: #d0a0c8;
+  --bar-bg: rgba(42,31,46,0.96); --bar-border: #4a3a52;
+  --modal-overlay: rgba(0,0,0,0.5);
+  --shadow: rgba(0,0,0,0.2);
+  --gradient: #2a1f2e;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { height:100%; }
+body {
+  background: var(--gradient);
+  color: var(--text);
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  min-height: 100vh; min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ====== App Shell ====== */
+.app { max-width: 480px; margin:0 auto; display:flex; flex-direction:column; min-height:100vh; min-height:100dvh; }
+
+/* ====== Header ====== */
+.header {
+  padding: 16px 16px 8px; text-align: center;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.header-left { display:flex; align-items:center; gap:8px; cursor:pointer; }
+.avatar { font-size:32px; line-height:1; transition: transform 0.2s; }
+.avatar:active { transform: scale(1.2); }
+.nickname { font-size:18px; font-weight:700; color: var(--accent3); }
+.header-right { display:flex; align-items:center; gap:6px; }
+.btn-icon {
+  width:36px; height:36px; border-radius:50%; border:1.5px solid var(--border);
+  background:var(--card); color:var(--accent3); font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition: all 0.15s; -webkit-tap-highlight-color:transparent;
+}
+.btn-icon:active { background:var(--bg2); transform:scale(0.94); }
+
+/* ====== Vibe Coding Theme Banner ====== */
+.vibe-banner {
+  margin:0 14px 10px; padding:10px 14px;
+  background: var(--card); border:1.5px solid var(--border);
+  border-radius:14px; text-align:center;
+  box-shadow: 0 2px 8px var(--shadow);
+  flex-shrink: 0;
+}
+.vibe-banner .vibe-label { font-size:9px; color:var(--sub); letter-spacing:2px; text-transform:uppercase; }
+.vibe-banner .vibe-text { font-size:14px; font-weight:600; color:var(--accent3); margin-top:2px; }
+
+/* ====== Main Content Area ====== */
+.main-content { flex:1; overflow-y:auto; padding:0 14px 10px; -webkit-overflow-scrolling:touch; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ====== Tab Bar ====== */
+.tab-bar {
+  position:sticky; bottom:0; left:0; right:0;
+  display:flex; background:var(--bar-bg);
+  border-top:1.5px solid var(--bar-border);
+  padding:6px 0 max(6px, env(safe-area-inset-bottom));
+  flex-shrink:0;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  z-index:100;
+}
+.tab {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:2px; padding:4px 0; cursor:pointer;
+  color:var(--sub); transition:all 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.tab.active { color:var(--accent3); }
+.tab .tab-icon { font-size:24px; line-height:1; }
+.tab .tab-label { font-size:10px; font-weight:600; }
+
+/* ====== Stats Row ====== */
+.stats { display:flex; gap:6px; margin:8px 0; }
+.stat {
+  flex:1; background:var(--card); border:1.5px solid var(--border);
+  border-radius:14px; padding:12px 6px; text-align:center;
+  box-shadow:0 2px 6px var(--shadow);
+}
+.stat .num { font-size:24px; font-weight:700; color:var(--accent2); }
+.stat .label { font-size:10px; color:var(--sub); margin-top:1px; }
+
+/* ====== Cards ====== */
+.card {
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:16px; padding:14px 12px; margin-bottom:8px;
+  box-shadow:0 2px 8px var(--shadow);
+}
+.card-title {
+  font-size:11px; font-weight:700; color:var(--accent3); letter-spacing:1px;
+  margin-bottom:6px; padding-bottom:6px; border-bottom:1px dashed var(--border);
+}
+.row {
+  display:flex; align-items:center; padding:6px 4px;
+  border-bottom:1px solid color-mix(in srgb, var(--border) 40%, transparent);
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+  user-select:none; transition:background 0.15s; border-radius:8px;
+}
+.row:active { background:color-mix(in srgb, var(--accent) 8%, transparent); }
+.row:last-child { border-bottom:none; }
+.row.done .label { color:var(--sub); text-decoration:line-through; opacity:0.45; }
+.time { width:56px; font-size:11px; font-weight:700; color:var(--accent); flex-shrink:0; }
+.label { flex:1; font-size:12.5px; margin:0 4px; font-weight:500; line-height:1.3; }
+.label small { display:block; font-size:9.5px; color:var(--sub); font-weight:400; }
+.tag { font-size:7.5px; padding:2px 7px; border-radius:9px; font-weight:600; flex-shrink:0; white-space:nowrap; }
+.tag.paper  { background:#fef0f3; color:#d46a84; border:1px solid #fddde6; }
+.tag.skill  { background:#f4f0fa; color:#9078c0; border:1px solid #e0d4f5; }
+.tag.ielts  { background:#eef6fd; color:#6a9fd8; border:1px solid #d0e4f8; }
+.tag.teach  { background:#edf8f2; color:#6ab890; border:1px solid #c8ebd8; }
+.tag.workout{ background:#fff0f3; color:#e8879e; border:1px solid #fddde6; }
+.tag.exam   { background:#eef6fd; color:#6a9fd8; border:1px solid #d0e4f8; }
+.tag.camp   { background:#f4f0fa; color:#9078c0; border:1px solid #e0d4f5; }
+.tag.other  { background:#fff8f0; color:#c89860; border:1px solid #fce4c8; }
+
+.checkbox {
+  width:20px; height:20px; border:2px solid #f7c5d0; border-radius:50%;
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; background:var(--card2); margin-left:2px;
+}
+.row.done .checkbox { background:var(--accent); border-color:var(--accent); box-shadow:0 2px 5px rgba(244,160,181,0.25); }
+.row.done .checkbox::after { content:'🐾'; font-size:10px; }
+
+/* Countdown */
+.cd-grid { display:flex; gap:3px; justify-content:center; flex-wrap:wrap; }
+.cd-item { text-align:center; min-width:46px; padding:5px 1px; background:var(--card2); border-radius:12px; border:1px solid var(--border); }
+.cd-num { font-size:16px; font-weight:700; }
+.cd-num.c1 { color:#c9b8e8; } .cd-num.c2 { color:#a3c6e8; }
+.cd-num.c3 { color:#a8d8c8; } .cd-num.c4 { color:#fcc8a0; }
+.cd-txt { font-size:9px; color:var(--sub); line-height:1.3; }
+
+/* History */
+.history-row { display:flex; justify-content:center; gap:5px; }
+.history-day { text-align:center; width:34px; padding:5px 1px; border-radius:10px; background:var(--card2); border:1px solid var(--border); font-size:10px; }
+.history-day .day-icon { font-size:16px; }
+.history-day .day-label { color:var(--sub); font-size:8px; }
+.history-day.full { border-color:var(--accent); background:var(--bg2); }
+.history-day.none { opacity:0.3; }
+
+/* Buttons */
+.btn-row { display:flex; gap:6px; margin-top:10px; }
+.btn {
+  flex:1; padding:10px; border-radius:13px; border:1.5px solid var(--border);
+  background:var(--card); color:var(--accent3); font-size:12px; cursor:pointer;
+  text-align:center; font-weight:600; transition:all 0.15s;
+}
+.btn:active { background:var(--bg2); transform:scale(0.97); }
+.btn.primary {
+  background:linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color:#fff; border:none; box-shadow:0 3px 10px rgba(232,135,158,0.2);
+}
+
+.footer { text-align:center; font-size:10px; color:var(--sub); padding:14px 0 20px; letter-spacing:0.5px; line-height:1.6; }
+.footer span { color:var(--accent3); }
+
+/* Badges */
+.badges { display:flex; gap:4px; flex-wrap:wrap; justify-content:center; margin-top:5px; }
+.badge { font-size:9px; padding:2px 8px; border-radius:20px; background:var(--card2); color:var(--sub); border:1px solid var(--border); }
+.badge.highlight { background:#f4f0fa; color:#9078c0; border-color:#e0d4f5; }
+
+/* Sleep card */
+.sleep-card { background:linear-gradient(135deg, var(--bg2) 0%, var(--card2) 100%); border-color:var(--border); }
+
+/* ====== Cat Pet Area ====== */
+.pet-container {
+  position:relative; width:100%; height:calc(100vh - 280px); height:calc(100dvh - 280px);
+  min-height:360px; background:linear-gradient(180deg, #e8f4fd 0%, #d4ecd8 40%, #c8e8d0 100%);
+  border-radius:20px; overflow:hidden; border:2px solid var(--border);
+  cursor:default; touch-action:none;
+}
+.pet-container .ground-layer {
+  position:absolute; bottom:0; left:0; right:0; height:40px;
+  background:linear-gradient(180deg, rgba(168,216,200,0.6) 0%, rgba(120,190,160,0.8) 100%);
+  border-radius:50% 60% 0 0 / 18px 18px 0 0; z-index:1;
+}
+.pet-container .sky-layer {
+  position:absolute; top:8px; left:12px; font-size:16px; opacity:0.5; z-index:0;
+}
+.cat {
+  position:absolute; font-size:60px; z-index:10;
+  transition: left 2.5s ease-in-out, bottom 1.5s ease-in-out;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+  animation: idleBounce 2s ease-in-out infinite;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.cat.walking { transition:left 1.8s linear, bottom 1s ease-in-out; }
+.cat.jumping {
+  transition:left 0.2s, bottom 0.4s cubic-bezier(0.22,0.61,0.36,1);
+  animation:jumpAnim 0.8s ease-in-out;
+}
+.cat.sleeping { animation:none; }
+@keyframes idleBounce {
+  0%,100% { transform:translateY(0) scale(1); }
+  30% { transform:translateY(-7px) scale(1.03); }
+  60% { transform:translateY(0) scale(1); }
+}
+@keyframes jumpAnim {
+  0% { transform:translateY(0) scale(1,1); }
+  30% { transform:translateY(-55px) scale(0.92,1.08); }
+  50% { transform:translateY(-75px) scale(1.04,0.96); }
+  100% { transform:translateY(0) scale(1,1); }
+}
+
+.cat-speech {
+  position:absolute; z-index:15; pointer-events:none;
+  background:var(--card); border:1.5px solid var(--border); border-radius:16px;
+  padding:7px 12px; font-size:12px; white-space:nowrap;
+  opacity:0; transition:opacity 0.3s;
+  box-shadow:0 3px 12px rgba(0,0,0,0.05);
+  font-family: inherit;
+}
+.cat-speech.show { opacity:1; }
+.cat-speech::after {
+  content:''; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
+  width:0;height:0; border-left:6px solid transparent; border-right:6px solid transparent;
+  border-top:6px solid var(--card);
+}
+
+.sparkle {
+  position:absolute; pointer-events:none; z-index:20;
+  animation:sparkleFloat 1.5s ease-out forwards;
+  font-size:18px;
+}
+@keyframes sparkleFloat {
+  0% { opacity:1; transform:translate(0,0) scale(0); }
+  50% { opacity:1; transform:translate(var(--dx),var(--dy)) scale(1.2); }
+  100% { opacity:0; transform:translate(var(--dx2),var(--dy2)) scale(0.3); }
+}
+
+.cat-controls {
+  display:flex; gap:4px; justify-content:center; margin-top:8px; flex-wrap:wrap;
+}
+.cat-btn {
+  padding:8px 14px; border-radius:20px; border:1.5px solid var(--border);
+  background:var(--card); color:var(--accent3); font-size:12px; cursor:pointer;
+  font-weight:600; transition:all 0.15s;
+}
+.cat-btn:active { background:var(--bg2); transform:scale(0.95); }
+
+/* ====== Settings Modal ====== */
+.modal-overlay {
+  position:fixed; inset:0; background:var(--modal-overlay);
+  z-index:200; display:flex; align-items:flex-end; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.modal-overlay.open { opacity:1; pointer-events:auto; }
+.modal {
+  background:var(--card); border-radius:22px 22px 0 0;
+  width:100%; max-width:480px; max-height:80vh; max-height:80dvh;
+  overflow-y:auto; padding:24px 18px max(24px, env(safe-area-inset-bottom));
+  box-shadow:0 -4px 24px rgba(0,0,0,0.08);
+  transform:translateY(100%); transition:transform 0.3s cubic-bezier(0.22,0.61,0.36,1);
+}
+.modal-overlay.open .modal { transform:translateY(0); }
+
+.modal-title { font-size:18px; font-weight:700; color:var(--accent3); text-align:center; margin-bottom:20px; }
+.modal-section { margin-bottom:18px; }
+.modal-section label { display:block; font-size:11px; font-weight:700; color:var(--sub); margin-bottom:8px; letter-spacing:1px; }
+.input-row { display:flex; gap:6px; }
+.input-row input {
+  flex:1; padding:10px 14px; border-radius:12px; border:1.5px solid var(--border);
+  background:var(--card2); font-size:15px; color:var(--text); outline:none;
+  font-family:inherit; transition:border-color 0.2s;
+}
+.input-row input:focus { border-color:var(--accent); }
+.input-row button {
+  padding:10px 16px; border-radius:12px; border:none;
+  background:linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color:#fff; font-size:13px; font-weight:600; cursor:pointer;
+}
+
+.emoji-grid { display:flex; flex-wrap:wrap; gap:6px; }
+.emoji-opt {
+  width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+  font-size:26px; border-radius:14px; border:2px solid transparent;
+  background:var(--card2); cursor:pointer; transition:all 0.15s;
+}
+.emoji-opt:active { transform:scale(0.92); }
+.emoji-opt.selected { border-color:var(--accent); background:var(--bg2); box-shadow:0 2px 8px var(--shadow); }
+
+.theme-row { display:flex; gap:8px; }
+.theme-dot {
+  flex:1; height:48px; border-radius:14px; cursor:pointer;
+  border:2.5px solid transparent; transition:all 0.15s;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:600;
+}
+.theme-dot:active { transform:scale(0.95); }
+.theme-dot.selected { border-color:var(--accent3); box-shadow:0 3px 12px var(--shadow); }
+.t-pink  { background:linear-gradient(135deg, #fff0f3, #f4a0b5); color:#d46a84; }
+.t-purple{ background:linear-gradient(135deg, #f3f0fa, #b8a0e0); color:#8060c0; }
+.t-mint  { background:linear-gradient(135deg, #eef7f3, #a8d8c8); color:#5ab890; }
+.t-dark  { background:linear-gradient(135deg, #2a1f2e, #4a3a52); color:#e0b0d8; }
+
+.modal-close {
+  display:block; width:100%; padding:12px; margin-top:8px;
+  border-radius:14px; border:1.5px solid var(--border);
+  background:var(--card2); color:var(--sub); font-size:14px; font-weight:600;
+  cursor:pointer; text-align:center;
+}
+
+/* ====== Install Banner ====== */
+.install-banner {
+  margin:8px 14px; padding:12px 16px;
+  background:var(--card); border:2px solid var(--accent);
+  border-radius:14px; display:flex; align-items:center; gap:10px;
+  box-shadow:0 3px 12px rgba(244,160,181,0.12); cursor:pointer;
+  flex-shrink:0; display:none;
+}
+.install-banner.show { display:flex; }
+.install-banner .install-icon { font-size:28px; }
+.install-banner .install-text { flex:1; font-size:12px; font-weight:600; color:var(--accent3); }
+.install-banner .install-btn {
+  padding:8px 16px; border-radius:20px; border:none;
+  background:linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color:#fff; font-size:12px; font-weight:700; cursor:pointer;
+}
+
+/* ====== Toast ====== */
+.toast {
+  position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
+  background:var(--accent3); color:#fff; padding:10px 20px; border-radius:20px;
+  font-size:13px; font-weight:600; z-index:300; opacity:0; transition:opacity 0.3s;
+  pointer-events:none; box-shadow:0 4px 16px rgba(0,0,0,0.12);
+}
+.toast.show { opacity:1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Install banner -->
+  <div class="install-banner" id="installBanner" onclick="installApp()">
+    <div class="install-icon">📲</div>
+    <div class="install-text">添加到主屏幕，随时随地打卡~</div>
+    <div class="install-btn">安装</div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left" id="headerAvatar" onclick="openSettings()">
+      <span class="avatar" id="avatarDisplay">🐱</span>
+      <span class="nickname" id="nicknameDisplay">EeeChan</span>
+    </div>
+    <div class="header-right">
+      <button class="btn-icon" onclick="openSettings()" title="设置">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Daily vibe coding banner -->
+  <div class="vibe-banner" id="vibeBanner">
+    <div class="vibe-label">🎨 今日 vibe coding 主题</div>
+    <div class="vibe-text" id="vibeText">加载中...</div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content" id="mainContent">
+
+    <!-- Tab 1: 作息打卡 -->
+    <div class="tab-panel active" id="tabCheckin">
+
+      <div class="stats">
+        <div class="stat"><div class="num" id="doneCount">0</div><div class="label">🐾 已完成</div></div>
+        <div class="stat"><div class="num" id="totalCount">20</div><div class="label">🎯 总任务</div></div>
+        <div class="stat"><div class="num" id="pct">0%</div><div class="label">💖 完成率</div></div>
+        <div class="stat"><div class="num" id="streak">0</div><div class="label">🔥 连续</div></div>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:10px; color:var(--sub); letter-spacing:1px; margin-bottom:6px;">📆 近7天打卡</div>
+        <div class="history-row" id="historyBar"></div>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:10px; color:#c9b8e8; letter-spacing:2px; margin-bottom:4px;">⏳ 倒 计 时</div>
+        <div class="cd-grid">
+          <div class="cd-item"><div class="cd-num c1" id="cdSummer">--</div><div class="cd-txt">清华夏令营<br>7.24-8.3</div></div>
+          <div class="cd-item"><div class="cd-num c2" id="cdIELTS">--</div><div class="cd-txt">雅思机考<br>8.18</div></div>
+          <div class="cd-item"><div class="cd-num c3" id="cdTeach">--</div><div class="cd-txt">教资笔试<br>9.12</div></div>
+          <div class="cd-item"><div class="cd-num c4" id="cdShiye">--</div><div class="cd-txt">事业编<br>9.19</div></div>
+        </div>
+      </div>
+
+      <!-- 早晨 -->
+      <div class="card">
+        <div class="card-title">🐱 早晨 · 6:00-7:45</div>
+        <div class="row" data-id="1"><span class="time">6:00</span><span class="label">起床 · 一杯温水</span><span class="checkbox"></span></div>
+        <div class="row" data-id="2"><span class="time">6:10</span><span class="label">空腹有氧 50min<small>快走/慢跑/跳绳 · 心率120-140</small></span><span class="tag workout">减脂</span><span class="checkbox"></span></div>
+        <div class="row" data-id="3"><span class="time">7:00</span><span class="label">洗澡 + 高蛋白早餐<small>蛋+奶+杂粮 · 别碰油条</small></span><span class="checkbox"></span></div>
+        <div class="row" data-id="4"><span class="time">7:45</span><span class="label">列今日任务清单</span><span class="checkbox"></span></div>
+      </div>
+
+      <!-- 上午 -->
+      <div class="card">
+        <div class="card-title">🎀 上午 · 攻坚</div>
+        <div class="row" data-id="5"><span class="time">8:00</span><span class="label">📝 论文修改 2.5h<small>按老师批注逐条改</small></span><span class="tag paper">最优先</span><span class="checkbox"></span></div>
+        <div class="row" data-id="6"><span class="time">10:30</span><span class="label">👗 服装技能实操 1h<small>周一/五CAD制版 · 周三缝制工艺 · 隔天交替 · 周日写工艺单</small></span><span class="tag skill">ET软件</span><span class="checkbox"></span></div>
+        <div class="row" data-id="7"><span class="time">11:30</span><span class="label">🍱 午餐<small>先菜→后肉→最后饭</small></span><span class="checkbox"></span></div>
+        <div class="row" data-id="8"><span class="time">12:15</span><span class="label">😴 午休 20min</span><span class="checkbox"></span></div>
+      </div>
+
+      <!-- 下午 -->
+      <div class="card">
+        <div class="card-title">🌸 下午 · 刷题</div>
+        <div class="row" data-id="9"><span class="time">13:00</span><span class="label">🌍 雅思听力<small>同桌英语 · 1个Section精听 → 看原文 → 跟读</small></span><span class="tag ielts">剑雅真题</span><span class="checkbox"></span></div>
+        <div class="row" data-id="10"><span class="time">13:45</span><span class="label">🌍 雅思阅读<small>同桌英语 · 1篇计时20min → 找同义替换</small></span><span class="tag ielts">剑雅真题</span><span class="checkbox"></span></div>
+        <div class="row" data-id="11"><span class="time">14:30</span><span class="label">📚 教资 1h<small>周一-五: 教育知识与能力按章刷 · 周六复习 · 周日综合素质</small></span><span class="tag teach">粉笔教师</span><span class="checkbox"></span></div>
+        <div class="row" data-id="12"><span class="time">15:30</span><span class="label">🍓 加餐 · 雅思单词50个<small>蛋白棒/酸奶 + 墨墨背单词</small></span><span class="tag other">墨墨</span><span class="checkbox"></span></div>
+        <div class="row" data-id="13"><span class="time">16:00</span><span class="label">✍️ 雅思写作<small>同桌英语 · 大/小作文隔天交替</small></span><span class="tag ielts">找批改</span><span class="checkbox"></span></div>
+        <div class="row" data-id="14"><span class="time">16:40</span><span class="label">📊 资料分析 1套20题<small>粉笔APP · 计时不纠结</small></span><span class="tag exam">考公</span><span class="checkbox"></span></div>
+        <div class="row" data-id="15"><span class="time">17:00</span><span class="label">📋 公基选择题 15道<small>粉笔APP碎片刷</small></span><span class="tag exam">事业编</span><span class="checkbox"></span></div>
+      </div>
+
+      <!-- 傍晚 -->
+      <div class="card">
+        <div class="card-title">🌙 傍晚 · 练+收</div>
+        <div class="row" data-id="16"><span class="time">17:10</span><span class="label">🏋️‍♀️ 力量训练 1h<small>周一胸 · 周三背 · 周五腿</small></span><span class="tag workout">无氧</span><span class="checkbox"></span></div>
+        <div class="row" data-id="17"><span class="time">18:10</span><span class="label">🥗 晚餐<small>少碳水 · 多蔬菜+蛋白</small></span><span class="checkbox"></span></div>
+        <div class="row" data-id="18"><span class="time">19:30</span><span class="label">🎤 试讲练习 15min<small>隔天 · 录视频回看</small></span><span class="tag skill">30%权重</span><span class="checkbox"></span></div>
+        <div class="row" data-id="19"><span class="time">20:00</span><span class="label">🗣️ 雅思口语<small>雅思哥APP · Part1×2 + Part2×1</small></span><span class="tag ielts">雅思哥</span><span class="checkbox"></span></div>
+        <div class="row" data-id="20"><span class="time">20:30</span><span class="label">📒 复盘 + 听力场景词20个<small>王陆语料库小程序</small></span><span class="checkbox"></span></div>
+      </div>
+
+      <!-- 睡觉 -->
+      <div class="card sleep-card" style="text-align:center;">
+        <div style="font-size:13px;">🌙 💤</div>
+        <div style="font-size:15px; font-weight:700; color:var(--accent3); margin:3px 0;">21:00 关屏 · 22:00 熄灯</div>
+        <div style="font-size:10px; color:var(--sub);">手机扔客厅喵~</div>
+      </div>
+
+      <!-- 关键日期 -->
+      <div class="card" style="border-color:#e0d4f5; background:linear-gradient(135deg, var(--card2) 0%, #faf8fc 100%);">
+        <div class="card-title">📅 关键日期</div>
+        <div class="row"><span class="time" style="color:#c9b8e8;">7.24-8.3</span><span class="label">🎓 清华夏令营 · 城市碳核算</span><span class="tag camp">北京</span></div>
+        <div class="row"><span class="time">7.3-7.6</span><span class="label">🔔 教资报名</span><span class="tag teach">设闹钟</span></div>
+        <div class="row"><span class="time">8.18</span><span class="label">🌍 雅思UKVI机考</span><span class="tag ielts">浙科大</span></div>
+        <div class="row"><span class="time">9.12</span><span class="label">📚 教资笔试 · 两门必过</span><span class="tag teach">综合素质+教育知识</span></div>
+        <div class="row"><span class="time">9.19</span><span class="label">🏛️ 浙江事业编统考</span><span class="tag exam">下半年</span></div>
+        <div class="row"><span class="time">11.30</span><span class="label">🏛️ 国考笔试</span><span class="tag other">预计</span></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="resetAll()">🔄 重置今日</button>
+        <button class="btn primary" onclick="showToast('📸 用手机截图：电源键+音量键')">📸 截图打卡</button>
+      </div>
+
+      <div class="footer">
+        🐱 <span id="footerName">EeeChan</span> · 雅思8.18 · 教资9.12 · 事业编9.19 🐱<br><span>每天醒来就是战斗</span>
+      </div>
+
+    </div><!-- /tabCheckin -->
+
+    <!-- Tab 2: 猫咪宠物 -->
+    <div class="tab-panel" id="tabCats">
+      <div class="card" style="text-align:center; padding:8px;">
+        <span style="font-size:12px; color:var(--sub);">🐾 戳戳小猫互动 · 拖拽可以移动它们 · 双击睡觉</span>
+      </div>
+      <div class="pet-container" id="petContainer">
+        <div class="sky-layer">☁️  ☁️    ☁️</div>
+        <div class="ground-layer"></div>
+        <!-- Cats injected by JS -->
+      </div>
+      <div class="cat-controls">
+        <button class="cat-btn" onclick="catAction('feed')">🍪 喂零食</button>
+        <button class="cat-btn" onclick="catAction('play')">🧶 逗猫棒</button>
+        <button class="cat-btn" onclick="catAction('groom')">🪥 梳毛</button>
+        <button class="cat-btn" onclick="catAction('dance')">🎵 跳舞</button>
+        <button class="cat-btn" onclick="catAction('reset')">🏠 回家</button>
+      </div>
+    </div>
+
+  </div><!-- /mainContent -->
+
+  <!-- Bottom Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab active" data-tab="tabCheckin" onclick="switchTab('tabCheckin')">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">作息打卡</span>
+    </div>
+    <div class="tab" data-tab="tabCats" onclick="switchTab('tabCats')">
+      <span class="tab-icon">🐱</span>
+      <span class="tab-label">猫咪宠物</span>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-title">⚙️ 个性化设置</div>
+
+    <div class="modal-section">
+      <label>💬 你的昵称</label>
+      <div class="input-row">
+        <input type="text" id="nicknameInput" placeholder="输入昵称..." maxlength="12">
+        <button onclick="saveNickname()">保存</button>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <label>🐱 选择头像</label>
+      <div class="emoji-grid" id="avatarGrid"></div>
+    </div>
+
+    <div class="modal-section">
+      <label>🎨 主题配色</label>
+      <div class="theme-row">
+        <div class="theme-dot t-pink" data-theme-val="pink" onclick="setTheme('pink')">🌸 粉</div>
+        <div class="theme-dot t-purple" data-theme-val="purple" onclick="setTheme('purple')">💜 紫</div>
+        <div class="theme-dot t-mint" data-theme-val="mint" onclick="setTheme('mint')">🌿 薄荷</div>
+        <div class="theme-dot t-dark" data-theme-val="dark" onclick="setTheme('dark')">🌙 暗黑</div>
+      </div>
+    </div>
+
+    <button class="modal-close" onclick="closeSettings()">✓ 完成</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== SETTINGS ====================
+const AVATARS = '🐱 🐈 🐈‍⬛ 😺 😸 😻 😽 😼 🙀 😹 🎀 ✨ 💖 🌸 🍓 🐾'.split(' ');
+let settings = { nickname:'EeeChan', avatar:'🐱', theme:'pink' };
+try { const s = JSON.parse(localStorage.getItem('eeechan_settings') || '{}'); Object.assign(settings, s); } catch(e) {}
+
+function saveSettings() {
+  localStorage.setItem('eeechan_settings', JSON.stringify(settings));
+  applySettings();
+}
+function applySettings() {
+  document.getElementById('avatarDisplay').textContent = settings.avatar;
+  document.getElementById('nicknameDisplay').textContent = settings.nickname;
+  document.getElementById('footerName').textContent = settings.nickname;
+  document.documentElement.setAttribute('data-theme', settings.theme);
+  document.querySelector('meta[name="theme-color"]').content = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  // Theme dot selection
+  document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('selected', d.dataset.themeVal === settings.theme));
+}
+function setTheme(t) { settings.theme = t; saveSettings(); applySettings(); showToast('主题已切换 ✨'); }
+function saveNickname() {
+  const v = document.getElementById('nicknameInput').value.trim();
+  if (v) { settings.nickname = v; saveSettings(); applySettings(); showToast('昵称已更新 💖'); }
+}
+
+// Avatar grid
+function buildAvatarGrid() {
+  const g = document.getElementById('avatarGrid');
+  g.innerHTML = AVATARS.map(a => {
+    const sel = (a === settings.avatar) ? ' selected' : '';
+    return `<div class="emoji-opt${sel}" onclick="selectAvatar('${a}')">${a}</div>`;
+  }).join('');
+}
+function selectAvatar(a) {
+  settings.avatar = a; saveSettings(); applySettings(); buildAvatarGrid(); showToast('头像已换 🐱');
+}
+document.getElementById('nicknameInput').value = settings.nickname;
+applySettings();
+buildAvatarGrid();
+
+// Modal
+function openSettings() {
+  document.getElementById('nicknameInput').value = settings.nickname;
+  buildAvatarGrid();
+  applySettings();
+  document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+document.getElementById('settingsModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
+});
+
+// ==================== TOAST ====================
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ==================== TABS ====================
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+  if (tabId === 'tabCats') initCats();
+  // Scroll to top
+  document.getElementById('mainContent').scrollTop = 0;
+}
+
+// ==================== CHECK-IN ====================
+const d = new Date();
+const week = ['日','一','二','三','四','五','六'];
+const totalSlots = 20;
+
+// Countdowns
+const targets = {
+  cdSummer: new Date(2026, 6, 24),
+  cdIELTS:  new Date(2026, 7, 18),
+  cdTeach:  new Date(2026, 8, 12),
+  cdShiye:  new Date(2026, 8, 19),
+};
+function updateCountdowns() {
+  Object.entries(targets).forEach(([id, t]) => {
+    const diff = Math.ceil((t - d) / (1000 * 60 * 60 * 24));
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = diff <= 0 ? '今天!' : diff + '天';
+    if (diff <= 7 && diff > 0) el.textContent = diff + '天!';
+  });
+}
+
+// Check-in logic
+function getDateStr(offset) { const dt = new Date(d); dt.setDate(dt.getDate() - offset); return dt.toISOString().split('T')[0]; }
+function getDayStatus(dateStr) {
+  try { const s = JSON.parse(localStorage.getItem('checkin_' + dateStr) || '[]'); if (s.length === 0) return 'none'; if (s.length >= totalSlots) return 'full'; return 'partial'; }
+  catch(e) { return 'none'; }
+}
+function calcStreak() { let s = 0; for (let i = 0; i < 365; i++) { if (getDayStatus(getDateStr(i)) === 'full') s++; else break; } return s; }
+function updateHistory() {
+  const bar = document.getElementById('historyBar');
+  const today = d.getDay(); const labels = ['日','一','二','三','四','五','六'];
+  let h = '';
+  for (let i = 6; i >= 0; i--) {
+    const dateStr = getDateStr(i), status = getDayStatus(dateStr);
+    const dayIdx = (today - i + 7) % 7;
+    let icon = '⚪', cls = 'history-day';
+    if (status === 'full') { icon = '💯'; cls = 'history-day full'; }
+    else if (status === 'partial') { icon = '✅'; }
+    else { cls = 'history-day none'; }
+    h += `<div class="${cls}"><div class="day-icon">${icon}</div><div class="day-label">${labels[dayIdx]}</div></div>`;
+  }
+  bar.innerHTML = h;
+  document.getElementById('streak').textContent = calcStreak();
+}
+
+function loadCheckins() {
+  try {
+    const today = d.toISOString().split('T')[0];
+    const stored = JSON.parse(localStorage.getItem('checkin_' + today) || '[]');
+    stored.forEach(id => { const row = document.querySelector(`[data-id="${id}"]`); if (row) row.classList.add('done'); });
+  } catch(e) {}
+  updateStats(); updateHistory();
+}
+function saveCheckins() {
+  const today = d.toISOString().split('T')[0];
+  const ids = [...document.querySelectorAll('#tabCheckin .row.done')].map(r => r.dataset.id);
+  localStorage.setItem('checkin_' + today, JSON.stringify(ids));
+  updateHistory();
+}
+function updateStats() {
+  const done = document.querySelectorAll('#tabCheckin .row.done').length;
+  document.getElementById('doneCount').textContent = done;
+  const pct = Math.round(done / totalSlots * 100);
+  const el = document.getElementById('pct');
+  el.textContent = done === totalSlots ? '💯' : pct + '%';
+}
+function resetAll() {
+  document.querySelectorAll('#tabCheckin .row.done').forEach(r => r.classList.remove('done'));
+  saveCheckins(); updateStats(); showToast('已重置今日打卡 🔄');
+}
+
+// Bind row clicks
+document.querySelectorAll('#tabCheckin .row').forEach(row => {
+  row.addEventListener('click', () => { row.classList.toggle('done'); saveCheckins(); updateStats(); });
+});
+
+updateCountdowns();
+loadCheckins();
+
+// ==================== DAILY VIBE CODING THEME ====================
+const VIBE_THEMES = [
+  '用CSS画一只会wink的猫 😉',
+  '做一个呼吸灯动画 💫',
+  '写一个粒子效果背景 ✨',
+  '用JS写一个贪吃蛇小游戏 🐍',
+  'CSS 3D翻转卡片效果 🃏',
+  '做一个打字机文字效果 ⌨️',
+  '用canvas画星空 🌌',
+  '实现一个毛玻璃拟态卡片 🪟',
+  '写一个计时器组件 ⏱️',
+  'CSS实现波浪动画 🌊',
+  '做一个拖拽排序列表 📋',
+  '实现打字速度测试 ⌨️',
+  '用CSS画像素猫咪 🐱',
+  '写一个随机名言生成器 💬',
+  '做一个渐变色生成器 🎨',
+  '实现点击涟漪效果 💧',
+  'CSS彩虹加载动画 🌈',
+  '做一个数字滚动动画 🔢',
+  '写一个简单的密码生成器 🔐',
+  '实现图片懒加载 📸',
+  'CSS粘土风格按钮 🎯',
+  '用JS写一个番茄钟 🍅',
+  '做一个小猫跟随鼠标效果 🖱️',
+  'CSS实现霓虹灯文字 💡',
+  '写一个emoji搜索器 🔍',
+  '实现页面平滑滚动导航 📜',
+  'CSS3D旋转相册 🖼️',
+  '做一个天气卡片组件 🌤️',
+  '用JS写一个录音动画 🎙️',
+  'CSS实现水波纹按钮 🔘',
+];
+function getDailyVibe() {
+  const today = d.toISOString().split('T')[0];
+  const stored = localStorage.getItem('vibe_' + today);
+  if (stored) return stored;
+  // Deterministic based on date
+  const seed = today.split('-').reduce((a,b) => a + parseInt(b), 0);
+  const theme = VIBE_THEMES[seed % VIBE_THEMES.length];
+  localStorage.setItem('vibe_' + today, theme);
+  return theme;
+}
+document.getElementById('vibeText').textContent = getDailyVibe();
+
+// ==================== CAT PET SYSTEM ====================
+const catLooks = ['🐱','🐈','🐈‍⬛','😺','😸','😻','😽','😼','🙀'];
+const catPhrases = [
+  '喵~','呼噜噜','摸我！','加油喵','论文改完了吗','今天学习了吗',
+  '好困呀','❤️','陪你学习！','EeeChan最棒','挠挠下巴','喵呜~',
+  '别太累哦','休息一下','单词背了吗','我陪你','呜呜呜','好吃！',
+  '再摸一下','嘿嘿','好舒服','咕噜噜','别停呀','抓到啦！',
+];
+
+let cats = [];
+let catsInited = false;
+
+function initCats() {
+  if (catsInited) return;
+  const container = document.getElementById('petContainer');
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+
+  // Two cats with distinct looks
+  const catDefs = [
+    { id:'cat1', emoji:'🐱', name:'小E', x: cw*0.25, y:80, color:'#ffb8c8' },
+    { id:'cat2', emoji:'😻', name:'小C', x: cw*0.6, y:60, color:'#c9b8e8' },
+  ];
+
+  catDefs.forEach(def => {
+    const el = document.createElement('div');
+    el.className = 'cat';
+    el.id = def.id;
+    el.textContent = def.emoji;
+    el.style.left = def.x + 'px';
+    el.style.bottom = def.y + 'px';
+    el.dataset.name = def.name;
+    el.dataset.lookIdx = '0';
+    el.dataset.sleeping = 'false';
+    container.appendChild(el);
+
+    // Speech bubble
+    const bubble = document.createElement('div');
+    bubble.className = 'cat-speech';
+    bubble.id = def.id + '_bubble';
+    container.appendChild(bubble);
+
+    const catObj = { el, bubble, name:def.name, container };
+    cats.push(catObj);
+    bindCatEvents(catObj);
+  });
+
+  catsInited = true;
+
+  // Start autonomous behaviors
+  cats.forEach(c => {
+    c._walkTimer = setInterval(() => randomWalk(c), 6000 + Math.random() * 4000);
+    c._talkTimer = setInterval(() => {
+      if (c.el.dataset.sleeping !== 'true') {
+        catSay(c, catPhrases[Math.floor(Math.random() * catPhrases.length)], 2500);
+      }
+    }, 10000 + Math.random() * 6000);
+  });
+
+  // Initial greeting
+  setTimeout(() => { catSay(cats[0], '你好呀~我是小E 🐱'); }, 500);
+  setTimeout(() => { catSay(cats[1], '我是小C 😻 一起玩吧~'); }, 1500);
+}
+
+function bindCatEvents(cat) {
+  const { el, bubble } = cat;
+
+  // Click
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    if (el.dataset.sleeping === 'true') { wakeCat(cat); return; }
+    const msgs = ['喵呜~','好舒服','再摸一下','咕噜噜','❤️','嘿嘿','痒','别停呀','呼噜噜噜'];
+    catSay(cat, msgs[Math.floor(Math.random() * msgs.length)]);
+    sparkleAt(cat, e.clientX, e.clientY);
+    jumpCat(cat);
+  });
+
+  // Double click - sleep/wake
+  el.addEventListener('dblclick', e => {
+    e.stopPropagation();
+    if (el.dataset.sleeping === 'true') { wakeCat(cat); } else { sleepCat(cat); }
+  });
+
+  // Drag
+  let drag = false, sx, sy, ox, oy;
+  el.addEventListener('mousedown', e => {
+    drag = true; sx = e.clientX; sy = e.clientY;
+    ox = parseInt(el.style.left) || 0; oy = parseInt(el.style.bottom) || 60;
+    el.style.cursor = 'grabbing';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!drag) return;
+    const container = cat.container;
+    const cw = container.clientWidth, ch = container.clientHeight;
+    let nx = ox + e.clientX - sx, ny = oy - (e.clientY - sy);
+    nx = Math.max(0, Math.min(nx, cw - 60));
+    ny = Math.max(35, Math.min(ny, ch - 90));
+    el.style.left = nx + 'px'; el.style.bottom = ny + 'px';
+    el.style.transition = 'none'; updateBubblePos(cat);
+  });
+  document.addEventListener('mouseup', () => {
+    if (drag) { drag = false; el.style.cursor = 'pointer'; el.style.transition = 'left 2.5s ease-in-out, bottom 1.5s ease-in-out'; }
+  });
+
+  // Touch drag
+  el.addEventListener('touchstart', e => {
+    drag = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    ox = parseInt(el.style.left) || 0; oy = parseInt(el.style.bottom) || 60;
+  }, {passive:true});
+  document.addEventListener('touchmove', e => {
+    if (!drag) return;
+    const container = cat.container;
+    const cw = container.clientWidth, ch = container.clientHeight;
+    let nx = ox + e.touches[0].clientX - sx, ny = oy - (e.touches[0].clientY - sy);
+    nx = Math.max(0, Math.min(nx, cw - 60));
+    ny = Math.max(35, Math.min(ny, ch - 90));
+    el.style.left = nx + 'px'; el.style.bottom = ny + 'px';
+    el.style.transition = 'none'; updateBubblePos(cat);
+  }, {passive:false});
+  document.addEventListener('touchend', () => {
+    if (drag) { drag = false; el.style.transition = 'left 2.5s ease-in-out, bottom 1.5s ease-in-out'; }
+  });
+}
+
+function catSay(cat, text, dur = 2500) {
+  cat.bubble.textContent = text;
+  cat.bubble.classList.add('show');
+  updateBubblePos(cat);
+  clearTimeout(cat._bubbleTimer);
+  cat._bubbleTimer = setTimeout(() => cat.bubble.classList.remove('show'), dur);
+}
+
+function updateBubblePos(cat) {
+  const r = cat.el.getBoundingClientRect();
+  const cr = cat.container.getBoundingClientRect();
+  cat.bubble.style.left = (r.left - cr.left + r.width / 2 - 40) + 'px';
+  cat.bubble.style.top = (r.top - cr.top - 40) + 'px';
+}
+
+function sparkleAt(cat, cx, cy) {
+  const cr = cat.container.getBoundingClientRect();
+  const x = cx - cr.left, y = cy - cr.top;
+  const emojis = ['✨','⭐','💕','🌸','💫','🌟','🎀'];
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('div'); s.className = 'sparkle';
+    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    s.style.left = x + 'px'; s.style.top = y + 'px';
+    s.style.setProperty('--dx', (Math.random()*50 - 25) + 'px');
+    s.style.setProperty('--dy', (Math.random()*-50 - 15) + 'px');
+    s.style.setProperty('--dx2', (Math.random()*70 - 35) + 'px');
+    s.style.setProperty('--dy2', (Math.random()*-70 - 30) + 'px');
+    cat.container.appendChild(s);
+    setTimeout(() => s.remove(), 1600);
+  }
+}
+
+function jumpCat(cat) {
+  const el = cat.el;
+  if (el.dataset.sleeping === 'true') return;
+  el.classList.add('jumping');
+  const b = parseInt(el.style.bottom) || 60;
+  el.style.bottom = (b + 70) + 'px';
+  setTimeout(() => { el.style.bottom = b + 'px'; updateBubblePos(cat); }, 450);
+  setTimeout(() => el.classList.remove('jumping'), 850);
+}
+
+function randomWalk(cat) {
+  const el = cat.el;
+  if (el.dataset.sleeping === 'true') return;
+  const container = cat.container;
+  const cw = container.clientWidth, ch = container.clientHeight;
+  const x = Math.random() * (cw - 70) + 5;
+  const y = Math.random() * (ch - 120) + 40;
+  el.style.left = x + 'px'; el.style.bottom = y + 'px';
+  el.classList.add('walking');
+  updateBubblePos(cat);
+  setTimeout(() => el.classList.remove('walking'), 1900);
+}
+
+function sleepCat(cat) {
+  const el = cat.el;
+  el.dataset.sleeping = 'true';
+  el.dataset.prevLook = el.textContent;
+  el.textContent = '😴';
+  el.classList.add('sleeping');
+  el.style.left = (cat.container.clientWidth / 2 - 30 + (cat === cats[0] ? -40 : 40)) + 'px';
+  el.style.bottom = '38px';
+  updateBubblePos(cat);
+  catSay(cat, 'zzz...💤', 3500);
+}
+
+function wakeCat(cat) {
+  const el = cat.el;
+  el.dataset.sleeping = 'false';
+  el.textContent = el.dataset.prevLook || catLooks[parseInt(el.dataset.lookIdx || 0)];
+  el.classList.remove('sleeping');
+  updateBubblePos(cat);
+  catSay(cat, '睡醒啦 ☀️');
+  randomWalk(cat);
+}
+
+// Global cat actions
+function catAction(action) {
+  initCats();
+  if (cats.length < 2) return;
+  const c1 = cats[0], c2 = cats[1];
+  switch(action) {
+    case 'feed':
+      [c1,c2].forEach(c => { if (c.el.dataset.sleeping !== 'true') { jumpCat(c); catSay(c, ['好好吃！',' yummy~','再来一口'][Math.floor(Math.random()*3)], 2000); } });
+      showToast('🍪 零食来啦！');
+      break;
+    case 'play':
+      [c1,c2].forEach((c,i) => {
+        if (c.el.dataset.sleeping !== 'true') {
+          setTimeout(() => jumpCat(c), i * 200);
+          catSay(c, ['抓到啦！','好好玩~','再来！'][Math.floor(Math.random()*3)], 2000);
+        }
+      });
+      showToast('🧶 逗猫棒时间！');
+      break;
+    case 'groom':
+      [c1,c2].forEach(c => { if (c.el.dataset.sleeping !== 'true') catSay(c, ['好舒服~','呼噜噜','梳毛最喜欢了'][Math.floor(Math.random()*3)], 2500); });
+      showToast('🪥 梳毛中...');
+      break;
+    case 'dance':
+      [c1,c2].forEach((c,i) => {
+        if (c.el.dataset.sleeping !== 'true') {
+          setTimeout(() => { jumpCat(c); setTimeout(() => jumpCat(c), 500); }, i * 300);
+          catSay(c, '🎵 喵喵喵~', 3000);
+        }
+      });
+      showToast('🎵 猫咪们在跳舞！');
+      break;
+    case 'reset':
+      resetCats();
+      showToast('🏠 猫咪回家啦');
+      break;
+  }
+}
+
+function resetCats() {
+  if (cats.length < 2) return;
+  const container = document.getElementById('petContainer');
+  const cw = container.clientWidth;
+  [cats[0], cats[1]].forEach((c, i) => {
+    c.el.dataset.sleeping = 'false';
+    c.el.classList.remove('sleeping');
+    c.el.textContent = catLooks[i];
+    c.el.dataset.lookIdx = String(i);
+    c.el.style.left = (cw * 0.2 + i * cw * 0.4) + 'px';
+    c.el.style.bottom = '60px';
+    updateBubblePos(c);
+    c.bubble.classList.remove('show');
+  });
+}
+
+// Resize handler - keep cats in bounds
+window.addEventListener('resize', () => {
+  if (!catsInited) return;
+  cats.forEach(c => updateBubblePos(c));
+});
+
+// ==================== PWA ====================
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(r => {
+      document.getElementById('installBanner').classList.remove('show');
+      deferredPrompt = null;
+    });
+  } else {
+    showToast('📲 在浏览器菜单中选择「添加到主屏幕」');
+  }
+}
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ==================== INIT ====================
+applySettings();
+updateCountdowns();
+loadCheckins();
+document.getElementById('vibeText').textContent = getDailyVibe();
+
+console.log('🐱 EeeChan PWA 已就绪！');
+console.log('💡 提示：在手机上用浏览器打开，选择「添加到主屏幕」即可安装');
+</script>
+</body>
+</html>

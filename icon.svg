@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#ffd4dc"/>
+      <stop offset="100%" stop-color="#f4a0b5"/>
+    </radialGradient>
+  </defs>
+  <!-- Rounded background -->
+  <rect x="16" y="16" width="480" height="480" rx="120" ry="120" fill="url(#bg)"/>
+
+  <!-- Ears -->
+  <ellipse cx="148" cy="100" rx="52" ry="70" fill="#fff" transform="rotate(-15,148,100)"/>
+  <ellipse cx="364" cy="100" rx="52" ry="70" fill="#fff" transform="rotate(15,364,100)"/>
+  <!-- Inner ears -->
+  <ellipse cx="148" cy="102" rx="30" ry="42" fill="#ffd4dc" transform="rotate(-15,148,102)"/>
+  <ellipse cx="364" cy="102" rx="30" ry="42" fill="#ffd4dc" transform="rotate(15,364,102)"/>
+
+  <!-- Face -->
+  <ellipse cx="256" cy="280" rx="170" ry="155" fill="#fff"/>
+
+  <!-- Eyes - big cute dot eyes -->
+  <circle cx="195" cy="250" r="24" fill="#4a3540"/>
+  <circle cx="317" cy="250" r="24" fill="#4a3540"/>
+  <!-- Eye shine -->
+  <circle cx="204" cy="240" r="9" fill="#fff"/>
+  <circle cx="326" cy="240" r="9" fill="#fff"/>
+  <!-- Tiny secondary shine -->
+  <circle cx="188" cy="255" r="4" fill="#fff"/>
+  <circle cx="310" cy="255" r="4" fill="#fff"/>
+
+  <!-- Nose -->
+  <path d="M248 290 L256 300 L264 290 Z" fill="#f4a0b5"/>
+
+  <!-- Mouth -->
+  <path d="M240 305 Q256 325 272 305" fill="none" stroke="#d4a0b0" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Blush -->
+  <ellipse cx="150" cy="295" rx="28" ry="16" fill="#ffd4dc" opacity="0.6"/>
+  <ellipse cx="362" cy="295" rx="28" ry="16" fill="#ffd4dc" opacity="0.6"/>
+
+  <!-- Tiny whiskers -->
+  <g stroke="#e8ccd4" stroke-width="3" stroke-linecap="round" opacity="0.6">
+    <line x1="80" y1="270" x2="140" y2="285"/>
+    <line x1="78" y1="295" x2="138" y2="298"/>
+    <line x1="432" y1="270" x2="372" y2="285"/>
+    <line x1="434" y1="295" x2="374" y2="298"/>
+  </g>
+
+  <!-- Small paw at bottom -->
+  <g transform="translate(256,420)" opacity="0.5">
+    <ellipse cx="0" cy="8" rx="14" ry="12" fill="#fff"/>
+    <circle cx="-12" cy="-8" r="8" fill="#fff"/>
+    <circle cx="0" cy="-12" r="8" fill="#fff"/>
+    <circle cx="12" cy="-8" r="8" fill="#fff"/>
+  </g>
+</svg>
