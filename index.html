@@ -87,6 +87,9 @@ body {
   cursor:pointer; transition: all 0.15s; -webkit-tap-highlight-color:transparent;
 }
 .btn-icon:active { background:var(--bg2); transform:scale(0.94); }
+.header-date { display:flex; flex-direction:column; align-items:center; line-height:1.15; }
+.header-date .hd-md { font-size:14px; font-weight:700; color:var(--accent3); }
+.header-date .hd-wk { font-size:10px; font-weight:600; color:var(--sub); letter-spacing:1px; }
 
 /* ====== Vibe Coding Theme Banner ====== */
 .vibe-banner {
@@ -431,6 +434,7 @@ body {
       <span class="avatar" id="avatarDisplay">🐱</span>
       <span class="nickname" id="nicknameDisplay">EeeChan</span>
     </div>
+    <div class="header-date" id="headerDate"></div>
     <div class="header-right">
       <button class="btn-icon" onclick="openSettings()" title="设置">⚙️</button>
     </div>
@@ -706,6 +710,11 @@ const targets = {
   cdTeach:  new Date(2026, 8, 12),
   cdShiye:  new Date(2026, 8, 19),
 };
+function updateHeaderDate() {
+  const el = document.getElementById('headerDate');
+  if (!el) return;
+  el.innerHTML = `<span class="hd-md">${d.getMonth() + 1}月${d.getDate()}日</span><span class="hd-wk">周${week[d.getDay()]}</span>`;
+}
 function updateCountdowns() {
   Object.entries(targets).forEach(([id, t]) => {
     const diff = Math.ceil((t - d) / (1000 * 60 * 60 * 24));
@@ -1188,6 +1197,7 @@ if ('serviceWorker' in navigator) {
 
 // ==================== INIT ====================
 applySettings();
+updateHeaderDate();
 updateCountdowns();
 loadCheckins();
 document.getElementById('vibeText').textContent = getDailyVibe();
